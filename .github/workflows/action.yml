@@ -1,0 +1,26 @@
+
+on:
+  schedule:
+    - cron: 0 0 * * *
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  action:
+    runs-on: windows-2022
+    steps:
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: clang64
+          update: true
+      - uses: actions/checkout@v4
+      - id: trymake
+        shell: msys2 {0}
+        run: ./action.sh
+      - uses: softprops/action-gh-release@v2
+        if: ${{ steps.trymake.outputs.old == 'true' }}
+        with:
+          files: PrismLauncher-Windows-MinGW-w64-Portable-${{ steps.trymake.outputs.tname }}.zip
+          tag_name: ${{ steps.trymake.outputs.tname }}

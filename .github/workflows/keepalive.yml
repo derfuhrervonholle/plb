@@ -1,0 +1,13 @@
+on:
+  schedule:
+    - cron: 0 0 * * *
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: PhrozenByte/gh-workflow-immortality@v1
+        with:
+          secret: ${{ secrets.immortality_token }}
+          repos: ${{ github.repository }}
